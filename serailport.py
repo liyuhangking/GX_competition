@@ -20,6 +20,7 @@ send_byte = bytearray([config["signal_values"]["header"],
                        config["signal_values"]["y_pos_2"],
                        config["signal_values"]["y_pos_3"], 
                        config["signal_values"]["color"], 
+                       config["signal_values"]["angle"],
                        config["signal_values"]["tail"]])
 
 receive_byte = bytearray([config["signal_values"]["header"], 
@@ -74,28 +75,41 @@ def send_serial_data(serial):
         center = parameter.Object_Data.center
         print(center)
         color = parameter.Object_Data.color
+        angle = parameter.Object_Data.angle
+        dis = parameter.Object_Data.dis
         center0 = center[0]
         center1 = center[1]
+        dis0 = dis[0]
+        dis1 = dis[1]
         send_data[1] = parameter.Mode.task_detect
 
-        send_data[2] = center0 & 0xFF
-        send_data[3] = (center0 >> 8) & 0xFF
-        send_data[4] = (center0 >> 16) & 0xFF
-        send_data[5] = (center1 & 0xFF)
-        send_data[6] = ((center1 >> 8) & 0xFF)
-        send_data[7] = ((center1 >> 16) & 0xFF)
+        if parameter.Mode.task_detect != 6:
+            send_data[2] = center0 & 0xFF
+            send_data[3] = (center0 >> 8) & 0xFF
+            send_data[4] = (center0 >> 16) & 0xFF
+            send_data[5] = (center1 & 0xFF)
+            send_data[6] = ((center1 >> 8) & 0xFF)
+            send_data[7] = ((center1 >> 16) & 0xFF)
+        if parameter.Mode.task_detect == 6:
+            send_data[2] = dis0 & 0xFF
+            send_data[3] = (dis0 >> 8) & 0xFF
+            send_data[4] = (dis0 >> 16) & 0xFF
+            send_data[5] = (dis1 & 0xFF)
+            send_data[6] = ((dis1 >> 8) & 0xFF)
+            send_data[7] = ((dis1 >> 16) & 0xFF)
 
-        send_data[8] =  color
+        send_data[8] = color
+        send_data[9] = angle
         serial.write(send_data)
-    if parameter.Mode.task_detect == 7:
+    # if parameter.Mode.task_detect == 7:
 
-        send_data[1] = parameter.Mode.task_detect
+    #     send_data[1] = parameter.Mode.task_detect
 
-        for i in range(6):
-            send_data[i+2]=parameter.WiFi_Scan.task_number[i]
+    #     for i in range(6):
+    #         send_data[i+2]=parameter.WiFi_Scan.task_number[i]
 
-        send_data[8] =  0x00
-        serial.write(send_data)
+    #     send_data[8] =  0x00
+    #     serial.write(send_data)
     print(time.strftime('Send:%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
     print(send_data)
     time.sleep(0.2)
@@ -107,11 +121,13 @@ def receive_thread(serial):
 def send_thread(serial):
     
     while True:
-        if parameter.Mode.task_detect is not 0:
+        if parameter.Mode.task_detect != 0:
             send_serial_data(serial)
         else:
-            parameter.Object_Data.center = (0, 0)
+            parameter.Object_Data.center = [0, 0]
+            parameter.Object_Data.dis = [0, 0]
             parameter.Object_Data.color = 0x00
+            parameter.Object_Data.angle = 0x00
         
 def Serial_Start():
     ser = serial_init()

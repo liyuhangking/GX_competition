@@ -1,8 +1,9 @@
 cam_id: 2
 min_radius: 640
 min_contour: 800
+print_mode: True
 Vision_Mode: True
-serialport_mode: True
+serialport_mode: False
 
 serial_config:
   port: /dev/ttyUSB0
@@ -21,6 +22,7 @@ signal_values:
   y_pos_2: 0x00
   y_pos_3: 0x00
   color: 0x00
+  angle: 0x00
   tail: 0xFE
 
 Materail_Thresholds:
