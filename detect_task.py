@@ -13,6 +13,11 @@ with open("config.yaml", 'r') as file:
 
 Vision_Mode = config["Vision_Mode"]
 
+def open_camera(cam_id):
+    cap = cv.VideoCapture(cam_id)
+    cap.set(cv.CAP_PROP_FPS, 30)
+    return cap
+
 def Materail_detect(img,color):
 
     Materail_Thresholds = config.get('Materail_Thresholds', {})
@@ -352,3 +357,35 @@ def int_to_binary_complement(number):
         complement_value = number
         
     return complement_value
+
+def select_mode(cam_id):
+
+    cap = open_camera(cam_id)
+    cap.set(cv.CAP_PROP_FOURCC,cv.VideoWriter_fourcc('M','J','P','G'))
+    print("Camera Open Success!")
+
+    while True:
+        _, img = cap.read()
+        img = cv.flip(img, -1)
+        #模式切换1，2分别是识别物料和地标的模式位，3，4，5是不同的颜色
+        if parameter.Mode.task_detect == 1:
+            if parameter.Mode.color_detect == 3:
+                parameter.Object_Data.color == 0x03
+                Materail_detect(img,3)
+            if parameter.Mode.color_detect == 4:
+                parameter.Object_Data.color == 0x04
+                Materail_detect(img,4)
+            if parameter.Mode.color_detect == 5:
+                parameter.Object_Data.color == 0x05
+                Materail_detect(img,5)
+            if parameter.Mode.color_detect == 0:
+                Materail_detect_v2(img)
+
+        if parameter.Mode.task_detect == 2:
+            parameter.Object_Data.color == 0x04
+            Land_mark_Detect(img,GREEN)
+        
+        if cv.waitKey(1) & 0xFF == 27:  # 按下ESC键退出循环
+            break
+    return img
+        

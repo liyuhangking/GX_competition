@@ -2,7 +2,7 @@ import numpy as np
 
 class Mode():
     color_detect = 0
-    task_detect = 6
+    task_detect = 1
 
 class Object_Data():
     position_matrix = np.zeros((4, 2), dtype=int)

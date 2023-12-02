@@ -1,9 +1,9 @@
-cam_id: 2
+cam_id: 0
 min_radius: 640
 min_contour: 800
 print_mode: True
 Vision_Mode: True
-serialport_mode: False
+serialport_mode: True
 
 serial_config:
   port: /dev/ttyUSB0
