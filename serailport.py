@@ -20,7 +20,6 @@ send_byte = bytearray([config["signal_values"]["header"],
                        config["signal_values"]["y_pos_2"],
                        config["signal_values"]["y_pos_3"], 
                        config["signal_values"]["color"], 
-                       config["signal_values"]["angle"],
                        config["signal_values"]["tail"]])
 
 receive_byte = bytearray([config["signal_values"]["header"], 
