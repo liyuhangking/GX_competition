@@ -1,10 +1,8 @@
-import parameter
 import yaml
 import cv2 as cv
 import numpy as np
 import serailport
 import detect_task as d_t
-import WiFi_Scanner
 
 with open("config.yaml", 'r') as file:
     config = yaml.load(file, Loader=yaml.FullLoader)

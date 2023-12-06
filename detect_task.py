@@ -380,6 +380,8 @@ def select_mode(cam_id):
                 Materail_detect(img,5)
             if parameter.Mode.color_detect == 0:
                 Materail_detect_v2(img)
+        if parameter.Mode.task_detect == 9:
+            tracing.find_color_boundary(img)
 
         if parameter.Mode.task_detect == 2:
             parameter.Object_Data.color == 0x04

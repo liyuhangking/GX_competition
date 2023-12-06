@@ -70,7 +70,7 @@ def receive_serial_data(ser):
 # 生成串口数据、发送数据
 def send_serial_data(serial):
     send_data = send_byte
-    if parameter.Mode.task_detect != 7:
+    if parameter.Mode.task_detect != 9:
         center = parameter.Object_Data.center
         print(center)
         color = parameter.Object_Data.color
@@ -87,17 +87,29 @@ def send_serial_data(serial):
 
         send_data[8] = color
         serial.write(send_data)
-    # if parameter.Mode.task_detect == 7:
+        print(".....................................Detect_ML...................................")
+        print(time.strftime('Send:%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
+        print(send_data)
+    if parameter.Mode.task_detect == 9:
+        point = parameter.Object_Data.point
+        angle = parameter.Object_Data.angle
+        point0 = point[0]
+        point1 = point[1]
+        send_data[1] = parameter.Mode.task_detect
 
-    #     send_data[1] = parameter.Mode.task_detect
+        send_data[2] = point0 & 0xFF
+        send_data[3] = (point0 >> 8) & 0xFF
+        send_data[4] = (point0 >> 16) & 0xFF
+        send_data[5] = (point1 & 0xFF)
+        send_data[6] = ((point1 >> 8) & 0xFF)
+        send_data[7] = ((point1 >> 16) & 0xFF)
 
-    #     for i in range(6):
-    #         send_data[i+2]=parameter.WiFi_Scan.task_number[i]
+        send_data[8] = angle
+        serial.write(send_data)
+        print("......................................Tracing trail................................. ")
+        print(time.strftime('Send:%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
+        print(send_data)
 
-    #     send_data[8] =  0x00
-    #     serial.write(send_data)
-    print(time.strftime('Send:%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
-    print(send_data)
     time.sleep(0.2)
 
 def receive_thread(serial):
@@ -111,7 +123,9 @@ def send_thread(serial):
             send_serial_data(serial)
         else:
             parameter.Object_Data.center = [0, 0]
+            parameter.Object_Data.point = [0, 0]
             parameter.Object_Data.color = 0x00
+            parameter.Object_Data.angle = 0x00
         
 def Serial_Start():
     ser = serial_init()

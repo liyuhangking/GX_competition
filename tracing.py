@@ -133,8 +133,8 @@ def find_color_boundary(frame):
     dis = [abs(int(point1[0] - point2[0])), abs(int(point1[1] - point2[1]))]
 
     parameter.Object_Data.angle = int(angle[0])
-    parameter.Object_Data.dis = dis
-    print("距离 = ", dis)
+    parameter.Object_Data.point = point1
+    #print("距离 = ", dis)
     print("角度 = ", angle)
     print("中点坐标 = ", point1)
     cv2.imshow('frame', frame)
