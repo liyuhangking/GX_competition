@@ -11,7 +11,8 @@ BLUE=5
 with open("config.yaml", 'r') as file:
     config = yaml.load(file, Loader=yaml.FullLoader)
 
-Vision_Mode = config["Vision_Mode"]
+image = config["image"]
+debug_image = config["debug_image"]
 
 def open_camera(cam_id):
     cap = cv.VideoCapture(cam_id)
@@ -35,7 +36,7 @@ def Materail_detect(img,color):
         mask = cv.inRange(hsv, tuple(lgc), tuple(ugc))
     elif color is RED:
         mask = cv.inRange(hsv, tuple(lrc), tuple(urc))
-    if Vision_Mode:
+    if debug_image:
         cv.imshow("mask",mask)
     contours, _ = cv.findContours(mask, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
     max_perimeter = 0
@@ -85,7 +86,7 @@ def Materail_detect(img,color):
         center_x = int(x + w/2)
         center_y = int(y + h/2)
         parameter.Object_Data.center = (center_x, center_y)
-    if Vision_Mode:
+    if image:
         cv.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
         cv.circle(img, parameter.Object_Data.center, 5, (0, 0, 0), -1)
         cv.imshow("materail_img",img)
@@ -137,7 +138,7 @@ def Land_mark_Detect(img, color):
                     min_radius = radius
                     smallest_circle = cnt
         
-        if Vision_Mode:
+        if image:
             cv.circle(img, (smallest_circle[0],smallest_circle[1]), smallest_circle[2], (0, 255, 0), 2)
         
         x, y, radius = smallest_circle[0], smallest_circle[1], smallest_circle[2]
@@ -153,7 +154,7 @@ def Land_mark_Detect(img, color):
         parameter.Object_Data.position_matrix[2] = [right, bottom]
         parameter.Object_Data.position_matrix[1] = [left, bottom]
         parameter.Object_Data.center = (x, y)
-        if Vision_Mode:
+        if image:
             cv.circle(img, parameter.Object_Data.center, 5, (0, 0, 0), -1)
             cv.imshow('Landmark_img', img)
     else:
@@ -166,7 +167,7 @@ def Land_mark_Detect(img, color):
         parameter.Object_Data.position_matrix[2] = [right, bottom]
         parameter.Object_Data.position_matrix[1] = [left, bottom]
         parameter.Object_Data.center = (0,0)
-        if Vision_Mode:
+        if image:
             cv.imshow('Landmark_img', img)
 
 def Materail_detect_v2(img):
@@ -190,7 +191,7 @@ def Materail_detect_v2(img):
     mask_red   =   cv.inRange(hsv, tuple(lrc), tuple(urc))
     contours_red, _ = cv.findContours(mask_red, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
 
-    if Vision_Mode:
+    if debug_image:
         cv.imshow("mask_blue",mask_blue)
         cv.imshow("mask_green",mask_green)
         cv.imshow("mask_red",mask_red)
@@ -256,7 +257,7 @@ def Materail_detect_v2(img):
 
         parameter.Object_Data.center = [center_x, center_y]
         parameter.Object_Data.color = 0x00
-    if Vision_Mode:
+    if image:
         cv.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
         cv.circle(img, tuple(parameter.Object_Data.center), 5, (0, 0, 0), -1)
         cv.imshow("materail_img",img)
@@ -339,10 +340,10 @@ def Edge_Detect(img):
         parameter.Object_Data.center = (mid_x, mid_y)
         parameter.Mode.color_detect = binary_complement
         print((mid_x,mid_y,k))
-        if Vision_Mode:    
+        if image:    
             cv.line(img, (0, lefty), (img.shape[1] - 1, righty), (0, 255, 0), 2)
             cv.circle(img, parameter.Object_Data.center, 5, (0, 0, 0), -1)   
-    if Vision_Mode:    
+    if image:    
         cv.imshow('Fitted Line', img)
 
 def int_to_binary_complement(number):
